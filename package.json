@@ -1,0 +1,17 @@
+{
+  "name": "movie-review-api",
+  "version": "1.0.0",
+  "description": "movie review app where user see movies and give reviews",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "kishan kareliya",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.1.0",
+    "nodemon": "^3.1.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
+  }
+}
