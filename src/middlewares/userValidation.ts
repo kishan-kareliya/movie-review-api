@@ -9,7 +9,7 @@ const userRegistrationSchema = z.object({
   profileImage: z.string().optional(),
 });
 
-const validateUserRegistration = (
+const validateRegistration = (
   req: Request,
   res: Response,
   next: NextFunction
@@ -22,4 +22,18 @@ const validateUserRegistration = (
   next();
 };
 
-export default validateUserRegistration;
+const userLoginSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(8, "password must be atleast 8 characters"),
+});
+
+const validateLogin = (req: Request, res: Response, next: NextFunction) => {
+  const result = userLoginSchema.safeParse(req.body);
+  if (!result.success) {
+    const error = createHttpError(400, "validation error");
+    return next(error);
+  }
+  next();
+};
+
+export default { validateRegistration, validateLogin };
