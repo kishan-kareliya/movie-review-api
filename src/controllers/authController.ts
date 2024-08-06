@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 
 const register = (req: Request, res: Response, next: NextFunction) => {
-  next(createHttpError(502, "testing error handling"));
+  res.send("welcome to register endpoint");
 };
 
 const login = (req: Request, res: Response) => {
