@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import MovieType from "../types/movieType";
 
-const movieSchema = new mongoose.Schema({
+const movieSchema = new mongoose.Schema<MovieType>({
   title: {
     type: String,
     trim: true,
