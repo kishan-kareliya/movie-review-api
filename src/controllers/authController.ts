@@ -99,7 +99,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
       );
     }
   }
-  //create jwt token
+  //generate jwt token
   const userId = result._id;
   const token = Jwt.sign(
     {
@@ -113,8 +113,36 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-const login = (req: Request, res: Response) => {
-  res.send("welcome to login controller");
+const login = async (req: Request, res: Response, next: NextFunction) => {
+  const { email, password } = req.body;
+
+  //check login details correct or not
+  try {
+    //return if email doesn't exist
+    const result = await userModel.findOne({ email });
+    if (!result) {
+      return next(createHttpError(401, "Username or Password is incorrect"));
+    }
+    //return if password is incorrect
+    const checkPassword = await bcrypt.compare(password, result.password);
+    if (!checkPassword) {
+      return next(createHttpError(401, "Username or Password is incorrect"));
+    }
+    //generate jwt token
+    const userId = result._id;
+    const token = Jwt.sign(
+      {
+        sub: userId,
+      },
+      process.env.JWT_SECRET as string
+    );
+    //pass jwt
+    res.status(202).json({
+      accessToken: token,
+    });
+  } catch (error) {
+    next(createHttpError(500, "Internal Server Error"));
+  }
 };
 
 export default { register, login };
