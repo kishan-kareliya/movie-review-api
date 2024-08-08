@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import ReviewType from "../types/reviewType";
 
-const ratingSchema = new mongoose.Schema({
+const ratingSchema = new mongoose.Schema<ReviewType>({
   userId: mongoose.Types.ObjectId,
   rating: {
     type: Number,
