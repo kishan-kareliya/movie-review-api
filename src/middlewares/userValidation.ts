@@ -64,4 +64,53 @@ const validateLogin = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-export default { validateRegistration, validateLogin };
+const userProfileUpdateSchema = z.object({
+  username: z
+    .string()
+    .min(2, "username must be atlest 2 characters")
+    .optional(),
+  email: z.string().email("invalid email address").optional(),
+  profileImage: z.any().optional(),
+});
+
+const validateUserProfileUpdate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { username, email } = req.body;
+  const result = userProfileUpdateSchema.safeParse({
+    username,
+    email,
+    profileImage: req.file,
+  });
+
+  if (!result.success) {
+    const profileImageName = req.file?.filename;
+
+    // If the user uploaded a profile picture and there's a validation error, delete the uploaded image
+    if (profileImageName) {
+      try {
+        await fs.unlink(
+          path.resolve(
+            __dirname,
+            `../../public/users/profileImage/${profileImageName}`
+          )
+        );
+      } catch (err) {
+        console.error("Error deleting temporary file:", err);
+      }
+    }
+
+    const error = createHttpError(400, "Validation error");
+    return next(error);
+  }
+
+  next();
+};
+
+export default {
+  validateRegistration,
+  validateLogin,
+  validateUserProfileUpdate,
+};

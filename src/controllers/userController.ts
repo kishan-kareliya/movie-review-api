@@ -40,6 +40,21 @@ const updateUserProfile = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => {
+  const _req = req as AuthenticatedRequest;
+  const { username, email, profileImage } = req.body;
+  const { userId } = _req;
+  console.log(
+    "userId: " +
+      userId +
+      "username: " +
+      username +
+      "email " +
+      email +
+      "profileImage" +
+      profileImage
+  );
+  console.log(req.file);
+};
 
 export default { getUserProfile, updateUserProfile };
