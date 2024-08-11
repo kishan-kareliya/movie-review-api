@@ -22,9 +22,9 @@ userRoute.get(
 userRoute.put(
   "/:id",
   upload.single("profileImage"),
+  userValidation.validateUserProfileUpdate,
   authentication,
   userAuthorization,
-  userValidation.validateUserProfileUpdate,
   userController.updateUserProfile
 );
 

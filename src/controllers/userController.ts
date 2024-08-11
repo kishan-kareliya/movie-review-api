@@ -3,7 +3,7 @@ import userModel from "../models/user";
 import createHttpError from "http-errors";
 import cloudinary from "../config/cloudinary";
 import path from "node:path";
-import fs from "fs/promises";
+import deleteImage from "../utils/deleteFile";
 
 type AuthenticatedRequest = Request & {
   userId?: string;
@@ -71,11 +71,7 @@ const updateUserProfile = async (
       );
     }
     //delete image locally from server
-    try {
-      await fs.unlink(imagePath);
-    } catch (error) {
-      return next(createHttpError(500, "Error while deleting image locally"));
-    }
+    await deleteImage(imagePath);
   }
 
   //check if profile image successfull upload or not

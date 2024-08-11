@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import createHttpError from "http-errors";
 import { z } from "zod";
 import path from "node:path";
-import fs from "fs/promises";
 import userModel from "../models/user";
+import deleteImage from "../utils/deleteFile";
 
 const userRegistrationSchema = z.object({
   username: z.string().min(2, "username atleast 2 characters"),
@@ -32,16 +32,12 @@ const validateRegistration = async (
 
     // if user upload profile picture then deleted from our server
     if (profileImageName) {
-      try {
-        await fs.unlink(
-          path.resolve(
-            __dirname,
-            `../../public/users/profileImage/${profileImageName}`
-          )
-        );
-      } catch (err) {
-        console.error("Error deleting temporary file:", err);
-      }
+      await deleteImage(
+        path.resolve(
+          __dirname,
+          `../../public/users/profileImage/${profileImageName}`
+        )
+      );
     }
 
     const error = createHttpError(400, "Validation error");
@@ -91,16 +87,12 @@ const validateUserProfileUpdate = async (
 
     // If the user uploaded a profile picture and there's a validation error, delete the uploaded image
     if (profileImageName) {
-      try {
-        await fs.unlink(
-          path.resolve(
-            __dirname,
-            `../../public/users/profileImage/${profileImageName}`
-          )
-        );
-      } catch (err) {
-        console.error("Error deleting temporary file:", err);
-      }
+      await deleteImage(
+        path.resolve(
+          __dirname,
+          `../../public/users/profileImage/${profileImageName}`
+        )
+      );
     }
 
     const error = createHttpError(400, "Validation error");
@@ -118,16 +110,12 @@ const validateUserProfileUpdate = async (
 
     // if user upload profile picture then deleted from our server
     if (profileImageName) {
-      try {
-        await fs.unlink(
-          path.resolve(
-            __dirname,
-            `../../public/users/profileImage/${profileImageName}`
-          )
-        );
-      } catch (err) {
-        console.error("Error deleting temporary file:", err);
-      }
+      deleteImage(
+        path.resolve(
+          __dirname,
+          `../../public/users/profileImage/${profileImageName}`
+        )
+      );
     }
 
     const error = createHttpError(403, "Username or Email Already Exist");
