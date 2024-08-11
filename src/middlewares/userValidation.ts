@@ -3,6 +3,7 @@ import createHttpError from "http-errors";
 import { z } from "zod";
 import path from "node:path";
 import fs from "fs/promises";
+import userModel from "../models/user";
 
 const userRegistrationSchema = z.object({
   username: z.string().min(2, "username atleast 2 characters"),
@@ -103,6 +104,33 @@ const validateUserProfileUpdate = async (
     }
 
     const error = createHttpError(400, "Validation error");
+    return next(error);
+  }
+
+  //check username and email already exist in the database or not
+  const existData = await userModel.find({
+    $or: [{ username: username }, { email: email }],
+  });
+
+  if (existData.length > 0) {
+    // if username or email already exist then first check user upload profileImage or not
+    const profileImageName = req.file?.filename;
+
+    // if user upload profile picture then deleted from our server
+    if (profileImageName) {
+      try {
+        await fs.unlink(
+          path.resolve(
+            __dirname,
+            `../../public/users/profileImage/${profileImageName}`
+          )
+        );
+      } catch (err) {
+        console.error("Error deleting temporary file:", err);
+      }
+    }
+
+    const error = createHttpError(403, "Username or Email Already Exist");
     return next(error);
   }
 
