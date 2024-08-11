@@ -1,48 +1,45 @@
 import { Request, Response, NextFunction } from "express";
-import createHttpError from "http-errors";
-import mongoose from "mongoose";
 import userModel from "../models/user";
+import createHttpError from "http-errors";
 
-type AuthenticatedRequest = Request & { userId?: string };
+type AuthenticatedRequest = Request & {
+  userId?: string;
+};
 
 const getUserProfile = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const id = req.params.id;
   const _req = req as AuthenticatedRequest;
-  const userId = _req.userId;
+  const { userId } = _req;
 
-  //check id is valid or not
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return next(createHttpError(400, "Invalid id"));
+  try {
+    const user = await userModel
+      .findById(userId)
+      .select("username email profileImage");
+
+    if (!user) {
+      return next(createHttpError(404, "User not found"));
+    }
+
+    const userPayload = {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      profileImage: user.profileImage,
+    };
+
+    res.json(userPayload);
+  } catch (error) {
+    next(createHttpError(500, "Internal Server Error"));
   }
-
-  //check user exist or not
-  const response = await userModel.findOne({
-    _id: id,
-  });
-
-  if (!response) {
-    return next(createHttpError(404, "User doesn't exist"));
-  }
-
-  //check user trying to acess profile is this user or not
-  if (userId != response._id.toString()) {
-    return next(
-      createHttpError(403, "can't allow access to the requested resource")
-    );
-  }
-
-  const userPayload = {
-    _id: response._id,
-    username: response.username,
-    email: response.email,
-    profileImage: response.profileImage,
-  };
-
-  res.json(userPayload);
 };
 
-export default { getUserProfile };
+const updateUserProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {};
+
+export default { getUserProfile, updateUserProfile };
