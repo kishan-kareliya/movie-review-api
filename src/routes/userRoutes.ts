@@ -1,7 +1,7 @@
 import express from "express";
-import authentication from "../middlewares/authentication";
+import authenticateUser from "../middlewares/authenticateUser";
 import userController from "../controllers/userController";
-import userAuthorization from "../middlewares/authorization";
+import authorizeUser from "../middlewares/authorizeUser";
 import multer from "multer";
 import path from "node:path";
 import userValidation from "../middlewares/userValidation";
@@ -14,8 +14,8 @@ const upload = multer({
 
 userRoute.get(
   "/:id",
-  authentication,
-  userAuthorization,
+  authenticateUser,
+  authorizeUser,
   userController.getUserProfile
 );
 
@@ -23,8 +23,8 @@ userRoute.put(
   "/:id",
   upload.single("profileImage"),
   userValidation.validateUserProfileUpdate,
-  authentication,
-  userAuthorization,
+  authenticateUser,
+  authorizeUser,
   userController.updateUserProfile
 );
 

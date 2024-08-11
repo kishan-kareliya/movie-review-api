@@ -5,7 +5,7 @@ import Jwt, { JwtPayload } from "jsonwebtoken";
 // Define a custom type that extends the Request interface
 type AuthenticatedRequest = Request & { userId?: string };
 
-const authentication = (
+const authenticateUser = (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
@@ -39,4 +39,4 @@ const authentication = (
   }
 };
 
-export default authentication;
+export default authenticateUser;

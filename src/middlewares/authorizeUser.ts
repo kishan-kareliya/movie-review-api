@@ -7,7 +7,7 @@ type AuthenticatedRequest = Request & {
   userId?: string;
 };
 
-const userAuthorization = async (
+const authorizeUser = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -39,4 +39,4 @@ const userAuthorization = async (
   next();
 };
 
-export default userAuthorization;
+export default authorizeUser;

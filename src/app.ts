@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
-import authenticationRoute from "./routes/authenticationRouter";
-import userRoute from "./routes/userRouter";
+import authRoutes from "./routes/authRoutes";
+import userRoutes from "./routes/userRoutes";
 import errorHandler from "./middlewares/globalErrorHandler";
 
 const app = express();
@@ -16,8 +16,8 @@ app.get("/", (req, res) => {
   res.send("welcome to movie review api");
 });
 
-app.use("/api/auth/", authenticationRoute);
-app.use("/api/users/", userRoute);
+app.use("/api/auth/", authRoutes);
+app.use("/api/users/", userRoutes);
 
 //global error handler
 app.use(errorHandler);
