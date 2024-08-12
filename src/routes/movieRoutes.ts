@@ -7,7 +7,7 @@ import movieValidation from "../middlewares/movieValidation";
 const movieRoute = express.Router();
 
 const upload = multer({
-  dest: path.resolve(__dirname, "../../public/movies/image"),
+  dest: path.resolve(__dirname, "../../public/movies/images"),
 });
 
 movieRoute.post(

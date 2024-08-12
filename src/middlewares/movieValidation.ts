@@ -3,6 +3,7 @@ import createHttpError from "http-errors";
 import { z } from "zod";
 import path from "node:path";
 import deleteImage from "../utils/deleteFile";
+import movieModel from "../models/movie";
 
 const addMovieSchema = z.object({
   title: z.string().min(2, "movie title must be atleast 2 character"),
@@ -40,6 +41,21 @@ const validateAddMovie = async (
     const error = createHttpError(400, "Validation error");
     return next(error);
   }
+
+  //check movie title already exist or not
+  const existTitle = await movieModel.findOne({
+    title,
+  });
+
+  //if title already exist then delete image from server
+  if (existTitle) {
+    const movieImageName = req.file?.filename;
+    await deleteImage(
+      path.resolve(__dirname, `../../public/movies/images/${movieImageName}`)
+    );
+    return next(createHttpError(403, "Movie title already exist"));
+  }
+
   next();
 };
 

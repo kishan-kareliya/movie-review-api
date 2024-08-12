@@ -16,13 +16,13 @@ const addMovie = async (req: Request, res: Response, next: NextFunction) => {
     const movieImageName = movieImage.filename;
     const movieImagePath = path.resolve(
       __dirname,
-      `../../public/movies/image/${movieImageName}`
+      `../../public/movies/images/${movieImageName}`
     );
 
     try {
       movieImageResult = await cloudinary.uploader.upload(movieImagePath, {
         filename_override: movieImageName,
-        folder: "MovieReviewApp/movies/image",
+        folder: "MovieReviewApp/movies/images",
         format: movieImageMimeType,
       });
     } catch (error) {
