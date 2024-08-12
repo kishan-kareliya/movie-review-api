@@ -4,6 +4,7 @@ import cloudinary from "../config/cloudinary";
 import createHttpError from "http-errors";
 import deleteImage from "../utils/deleteFile";
 import movieModel from "../models/movie";
+import mongoose from "mongoose";
 
 const addMovie = async (req: Request, res: Response, next: NextFunction) => {
   const { title, genre, director, releaseDate, description } = req.body;
@@ -72,4 +73,25 @@ const getMovies = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default { addMovie, getMovies };
+const getMovieById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = req.params.id;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return next(createHttpError(400, "Invalid movie id"));
+  }
+
+  try {
+    const movieResult = await movieModel.findById(id);
+    if (!movieResult) {
+      return next(createHttpError(404, "Movie Not Found"));
+    }
+    return res.status(200).json(movieResult);
+  } catch (error) {
+    return next(createHttpError(500, "Internal server Error"));
+  }
+};
+
+export default { addMovie, getMovies, getMovieById };

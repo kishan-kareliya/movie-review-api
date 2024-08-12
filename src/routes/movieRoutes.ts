@@ -19,4 +19,6 @@ movieRoute.post(
 
 movieRoute.get("/", movieController.getMovies);
 
+movieRoute.get("/:id", movieController.getMovieById);
+
 export default movieRoute;
