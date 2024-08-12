@@ -19,6 +19,8 @@ movieRoute.post(
 
 movieRoute.get("/", movieController.getMovies);
 
+movieRoute.get("/search", movieController.searchMovies);
+
 movieRoute.get("/:id", movieController.getMovieById);
 
 movieRoute.delete("/:id", movieController.deleteMovie);

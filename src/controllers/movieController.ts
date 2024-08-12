@@ -113,4 +113,33 @@ const deleteMovie = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default { addMovie, getMovies, getMovieById, deleteMovie };
+const searchMovies = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { q } = req.query;
+
+  if (!q || typeof q !== "string") {
+    return next(createHttpError(400, "Invalid search query"));
+  }
+
+  try {
+    const searchMovieResult = await movieModel.find({
+      $or: [
+        { title: { $regex: q, $options: "i" } },
+        { director: { $regex: q, $options: "i" } },
+      ],
+    });
+
+    if (searchMovieResult.length === 0) {
+      return next(createHttpError(404, "Movie Not Found"));
+    }
+
+    return res.status(200).json(searchMovieResult);
+  } catch (error) {
+    return next(createHttpError(500, "Internal server Error"));
+  }
+};
+
+export default { addMovie, getMovies, getMovieById, deleteMovie, searchMovies };
