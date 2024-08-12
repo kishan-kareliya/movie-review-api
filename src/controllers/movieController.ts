@@ -63,4 +63,13 @@ const addMovie = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default { addMovie };
+const getMovies = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const fetchMovies = await movieModel.find({});
+    res.status(200).json(fetchMovies);
+  } catch (error) {
+    return next(createHttpError(500, "Internal server error"));
+  }
+};
+
+export default { addMovie, getMovies };
