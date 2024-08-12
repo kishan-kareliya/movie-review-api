@@ -94,4 +94,23 @@ const getMovieById = async (
   }
 };
 
-export default { addMovie, getMovies, getMovieById };
+const deleteMovie = async (req: Request, res: Response, next: NextFunction) => {
+  const id = req.params.id;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return next(createHttpError(400, "Invalid movie id"));
+  }
+
+  try {
+    const deleteMovieResult = await movieModel.findByIdAndDelete(id);
+    if (!deleteMovieResult) {
+      return next(createHttpError(404, "Movie Not Found"));
+    }
+    return res.status(202).json({
+      message: "movie deleted successfully!",
+    });
+  } catch (error) {
+    return next(createHttpError(500, "Internal server Error"));
+  }
+};
+
+export default { addMovie, getMovies, getMovieById, deleteMovie };

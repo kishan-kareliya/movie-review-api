@@ -21,4 +21,6 @@ movieRoute.get("/", movieController.getMovies);
 
 movieRoute.get("/:id", movieController.getMovieById);
 
+movieRoute.delete("/:id", movieController.deleteMovie);
+
 export default movieRoute;
