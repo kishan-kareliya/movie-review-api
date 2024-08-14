@@ -142,4 +142,35 @@ const searchMovies = async (
   }
 };
 
-export default { addMovie, getMovies, getMovieById, deleteMovie, searchMovies };
+const filterMovies = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { genre, releaseDate } = req.query;
+
+  let filter: any = {};
+  if (genre) filter.genre = genre;
+  if (releaseDate) filter.releaseDate = releaseDate;
+
+  try {
+    const filterMoviesResult = await movieModel.find(filter);
+
+    if (filterMoviesResult.length === 0) {
+      return next(createHttpError(404, "Movie Not Found"));
+    }
+
+    return res.status(200).json(filterMoviesResult);
+  } catch (error) {
+    return next(createHttpError(500, "Internal server Error"));
+  }
+};
+
+export default {
+  addMovie,
+  getMovies,
+  getMovieById,
+  deleteMovie,
+  searchMovies,
+  filterMovies,
+};
