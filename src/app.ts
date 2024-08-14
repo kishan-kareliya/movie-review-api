@@ -4,6 +4,7 @@ import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
 import movieRoutes from "./routes/movieRoutes";
 import errorHandler from "./middlewares/globalErrorHandler";
+import reviewRoutes from "./routes/reviewRoutes";
 
 const app = express();
 app.use(express.json());
@@ -20,6 +21,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth/", authRoutes);
 app.use("/api/users/", userRoutes);
 app.use("/api/movies/", movieRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 //global error handler
 app.use(errorHandler);

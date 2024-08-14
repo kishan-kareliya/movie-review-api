@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import ReviewType from "../types/reviewType";
 
 const ratingSchema = new mongoose.Schema<ReviewType>({
+  movieId: mongoose.Types.ObjectId,
   userId: mongoose.Types.ObjectId,
   rating: {
     type: Number,
