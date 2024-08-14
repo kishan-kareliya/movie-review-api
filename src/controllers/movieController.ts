@@ -64,6 +64,72 @@ const addMovie = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const updateMovie = async (req: Request, res: Response, next: NextFunction) => {
+  const { title, genre, director, releaseDate, description } = req.body;
+  const { id } = req.params;
+  const movieImage = req.file;
+
+  let movieImageResult;
+
+  if (movieImage) {
+    const movieImageMimeType = movieImage.mimetype.split("/").at(-1);
+    const movieImageName = movieImage.filename;
+    const movieImagePath = path.resolve(
+      __dirname,
+      `../../public/movies/images/${movieImageName}`
+    );
+
+    try {
+      movieImageResult = await cloudinary.uploader.upload(movieImagePath, {
+        filename_override: movieImageName,
+        folder: "MovieReviewApp/movies/images",
+        format: movieImageMimeType,
+      });
+    } catch (error) {
+      return next(
+        createHttpError(500, "Error while uploadin image to cloudinary")
+      );
+    }
+
+    //delete image locally from server
+    await deleteImage(movieImagePath);
+  }
+
+  // check image received and image upload to the cloudinary then fetch url
+  let movieImageUrl;
+  if (movieImageResult) {
+    movieImageUrl = movieImageResult.secure_url;
+  }
+
+  //create movie update payload;
+  let movieUpdatePayload: any = {};
+  if (title) movieUpdatePayload.title = title;
+  if (genre) movieUpdatePayload.genre = genre;
+  if (director) movieUpdatePayload.director = director;
+  if (releaseDate) movieUpdatePayload.releaseDate = releaseDate;
+  if (description) movieUpdatePayload.description = description;
+  if (movieImageUrl) movieUpdatePayload.coverImage = movieImageUrl;
+
+  try {
+    const updateMovieResult = await movieModel.findByIdAndUpdate(
+      id,
+      movieUpdatePayload
+    );
+
+    if (!updateMovieResult) {
+      return next(
+        createHttpError(422, "Error while updating data to the database")
+      );
+    }
+
+    res.status(202).json({
+      message: "movie updated successfully",
+    });
+  } catch (error) {
+    return next(createHttpError(500, "Internal server error"));
+  }
+};
+
 const getMovies = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const fetchMovies = await movieModel.find({});
@@ -173,4 +239,5 @@ export default {
   deleteMovie,
   searchMovies,
   filterMovies,
+  updateMovie,
 };

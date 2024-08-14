@@ -23,6 +23,13 @@ movieRoute.get("/search", movieController.searchMovies);
 
 movieRoute.get("/filter", movieController.filterMovies);
 
+movieRoute.put(
+  "/:id",
+  upload.single("coverImage"),
+  movieValidation.validateUpdateMovie,
+  movieController.updateMovie
+);
+
 movieRoute.get("/:id", movieController.getMovieById);
 
 movieRoute.delete("/:id", movieController.deleteMovie);
