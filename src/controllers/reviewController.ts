@@ -19,7 +19,7 @@ const addReview = async (req: Request, res: Response, next: NextFunction) => {
     });
 
     if (!addReviewResult) {
-      return next(createHttpError("Error while add data to the database"));
+      return next(createHttpError(500, "Error while add data to the database"));
     }
 
     res.status(202).json({
@@ -49,7 +49,7 @@ const updateReview = async (
     );
 
     if (!updateReviewResult) {
-      return next(createHttpError("Error while add data to the database"));
+      return next(createHttpError(500, "Error while add data to the database"));
     }
 
     res.status(202).json({
@@ -60,4 +60,24 @@ const updateReview = async (
   }
 };
 
-export default { addReview, updateReview };
+const deleteReview = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+
+  try {
+    const deleteReviewResult = await reviewModel.findByIdAndDelete(id);
+    if (!deleteReviewResult) {
+      return next(createHttpError(500, "Error while delete from database"));
+    }
+    res.status(202).json({
+      message: "Review Deleted Successfully!",
+    });
+  } catch (error) {
+    next(createHttpError(500, "Internal server Error!"));
+  }
+};
+
+export default { addReview, updateReview, deleteReview };

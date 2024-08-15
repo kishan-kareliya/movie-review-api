@@ -19,4 +19,11 @@ reviewRoute.put(
   reviewController.updateReview
 );
 
+reviewRoute.delete(
+  "/:id",
+  authenticateUser,
+  reviewValidation.deleteReviewValidation,
+  reviewController.deleteReview
+);
+
 export default reviewRoute;

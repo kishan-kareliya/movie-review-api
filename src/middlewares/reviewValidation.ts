@@ -112,4 +112,34 @@ const updateReviewValidation = async (
   }
 };
 
-export default { addReviewValidation, updateReviewValidation };
+const deleteReviewValidation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+
+  //validate reviewId
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return next(createHttpError(400, "Invalid review id"));
+  }
+
+  try {
+    //check that review exist in db or not
+    const existData = await reviewModel.findById(id);
+
+    if (!existData) {
+      return next(createHttpError(404, "Review not exist in database"));
+    }
+
+    next();
+  } catch (error) {
+    return next(createHttpError(500, "Internal server error"));
+  }
+};
+
+export default {
+  addReviewValidation,
+  updateReviewValidation,
+  deleteReviewValidation,
+};
