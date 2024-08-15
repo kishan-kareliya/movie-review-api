@@ -3,6 +3,7 @@ interface UserType {
   email: string;
   password: string;
   profileImage: string;
+  isAdmin: boolean;
 }
 
 export default UserType;

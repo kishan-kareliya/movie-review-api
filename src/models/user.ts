@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema<UserType>(
     profileImage: {
       type: String,
     },
+    isAdmin: {
+      type: Boolean,
+      default: false, // Default to false for regular users
+    },
   },
   { timestamps: true }
 );
