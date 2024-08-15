@@ -12,4 +12,11 @@ reviewRoute.post(
   reviewController.addReview
 );
 
+reviewRoute.put(
+  "/:id",
+  authenticateUser,
+  reviewValidation.updateReviewValidation,
+  reviewController.updateReview
+);
+
 export default reviewRoute;

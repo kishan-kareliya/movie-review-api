@@ -3,7 +3,6 @@ import createHttpError from "http-errors";
 import mongoose from "mongoose";
 import { z } from "zod";
 import movieModel from "../models/movie";
-import userModel from "../models/user";
 import reviewModel from "../models/review";
 
 const addReviewSchema = z.object({
@@ -64,4 +63,53 @@ const addReviewValidation = async (
   }
 };
 
-export default { addReviewValidation };
+const updateReviewSchema = z.object({
+  userId: z.string(),
+  rating: z
+    .number()
+    .min(0, "rating must be minimum 0")
+    .max(5, "rating must be maximum 5")
+    .optional(),
+  comment: z.string().min(2, "comment must be atlest 2 characters").optional(),
+});
+
+const updateReviewValidation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { rating, comment } = req.body;
+  const { id } = req.params;
+  const _req = req as AuthenticatedRequest;
+  const { userId } = _req;
+
+  const result = updateReviewSchema.safeParse({
+    userId,
+    rating,
+    comment,
+  });
+
+  //validate reviewId
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return next(createHttpError(400, "Invalid review id"));
+  }
+
+  if (!result.success) {
+    return next(createHttpError(400, "Validation error"));
+  }
+
+  try {
+    //check that review exist in db or not
+    const existData = await reviewModel.findById(id);
+
+    if (!existData) {
+      return next(createHttpError(404, "Review not exist in database"));
+    }
+
+    next();
+  } catch (error) {
+    return next(createHttpError(500, "Internal server error"));
+  }
+};
+
+export default { addReviewValidation, updateReviewValidation };
