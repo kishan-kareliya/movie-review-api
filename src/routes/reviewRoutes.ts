@@ -1,8 +1,15 @@
 import express from "express";
 import reviewController from "../controllers/reviewController";
+import reviewValidation from "../middlewares/reviewValidation";
+import authenticateUser from "../middlewares/authenticateUser";
 
 const reviewRoute = express.Router();
 
-reviewRoute.post("/", reviewController.addReview);
+reviewRoute.post(
+  "/",
+  authenticateUser,
+  reviewValidation.addReviewValidation,
+  reviewController.addReview
+);
 
 export default reviewRoute;

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import ReviewType from "../types/reviewType";
 
-const ratingSchema = new mongoose.Schema<ReviewType>({
+const reviewSchema = new mongoose.Schema<ReviewType>({
   movieId: mongoose.Types.ObjectId,
   userId: mongoose.Types.ObjectId,
   rating: {
@@ -17,6 +17,6 @@ const ratingSchema = new mongoose.Schema<ReviewType>({
   },
 });
 
-const ratingModel = mongoose.model("rating", ratingSchema);
+const reviewModel = mongoose.model("rating", reviewSchema);
 
-export default ratingModel;
+export default reviewModel;
