@@ -49,14 +49,17 @@ A comprehensive backend API for managing user authentication, profiles, movies, 
 ## Project Structure
 
     src/
+    |
     ├── config/
     │ ├── cloudinary.ts # Cloudinary service configuration
     │ └── db.ts # MongoDB connection setup
+    |
     ├── controllers/
     │ ├── authController.ts # Handle registration and login
     │ ├── movieController.ts # Handle CRUD operations for movies
     │ ├── reviewController.ts # Handle CRUD operations for reviews
     │ └── userController.ts # Handle user profile operations
+    |
     ├── middlewares/
     │ ├── authenticateUser.ts # Check and verify JWT token
     │ ├── authorizeAdmin.ts # Ensure the user is an admin
@@ -65,19 +68,24 @@ A comprehensive backend API for managing user authentication, profiles, movies, 
     │ ├── movieValidation.ts # Zod validation for movie operations
     │ ├── reviewValidation.ts # Zod validation for review operations
     │ └── userValidation.ts # Zod validation for user operations
+    |
     ├── models/
     │ ├── movie.ts # Movie model schema
     │ ├── review.ts # Review model schema
     │ └── user.ts # User model schema
+    |
     ├── routes/
     │ ├── authRoutes.ts # Authentication routes
     │ ├── movieRoutes.ts # Movie management routes
     │ ├── reviewRoutes.ts # Review management routes
     │ └── userRoutes.ts # User profile routes
+    |
     ├── types/
     │ ├── movieTypes.ts # Type definitions for movie data
     │ ├── reviewTypes.ts # Type definitions for review data
     │ └── userTypes.ts # Type definitions for user data
+    |
     ├── utils/
     │ └── deleteFile.ts # Utility for deleting images from specific paths
+    |
     └── app.ts # Main application setup and configuration
